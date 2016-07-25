@@ -42,10 +42,23 @@ def avgPol(matrix, polarizacion):
     :return:
     Devuelve la intensidad promedio para una polarizacion especifica
     """
-    outprom = imatrix[0][0] * 0
-    for i in range(0, 8):
-        outprom += imatrix[polarizacion][i] / 8
-    return outprom
+    if polarizacion<3:
+        outprom = matrix[0][0] * 0
+        for i in range(0, 8):
+            outprom += matrix[polarizacion][i] / 8
+        return outprom
+    else:
+        avgotsu = uint16to8(matrix[0][0] * 0)
+        for i in range(0, 3):
+            outsu = avgPol(matrix, i)
+            outsu = uint16to8(outsu)
+            a, outsu = cv2.threshold(outsu, 100, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+            avgotsu += outsu / 3
+        return avgotsu
+
+def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
+
+
 path = []
 
 path.append('Data/008/3621/07032015/3621BRAZOIZQUIERDO/multi')
@@ -58,11 +71,10 @@ path.append('Data/029/3639/07102015/ESCAPULARDERECHAINFERIOR/multi')
 #datosimg = files[i].split("-") # 0. ) 1.Longitud de Onda 2. ? 3. ?
 
 
-imatrix = createMatrix(path[2])
-out = avgPol(imatrix,0)
-
-cv2.imshow('1', imatrix[0][0])
-cv2.imshow('2', out)
+imatrix = createMatrix(path[4])
+avgotsu = avgPol(imatrix,8)
+cv2.imshow('1', imatrix[2][0])
+cv2.imshow('2', avgotsu)
 
 
 cv2.waitKey()
