@@ -14,8 +14,6 @@ def rawRead(path):
     imagenRaw *= (2 ** 16) / imagenRaw.max()
     return imagenRaw
 
-
-
 def createMatrix(path):
     """"
     Crear Matriz con primera coordenada polarizacion, segunda coordenada longitud de onda de forma ascendente
@@ -34,10 +32,20 @@ def createMatrix(path):
     for column in range(0,3):
         imagerows = []
         [imagerows.append(rawRead(path + '/' + row)) for row in filesbypol[column]]
-        print column
         imagematrix.append(imagerows)
     return imagematrix
 
+def avgPol(matrix, polarizacion):
+    """
+    :param matrix: Matriz generada con el metodo createMatrix
+    :param polarizacion: [0-2] tipo de polarizacion
+    :return:
+    Devuelve la intensidad promedio para una polarizacion especifica
+    """
+    outprom = imatrix[0][0] * 0
+    for i in range(0, 8):
+        outprom += imatrix[polarizacion][i] / 8
+    return outprom
 path = []
 
 path.append('Data/008/3621/07032015/3621BRAZOIZQUIERDO/multi')
@@ -50,9 +58,11 @@ path.append('Data/029/3639/07102015/ESCAPULARDERECHAINFERIOR/multi')
 #datosimg = files[i].split("-") # 0. ) 1.Longitud de Onda 2. ? 3. ?
 
 
-imatrix = createMatrix(path[4])
+imatrix = createMatrix(path[2])
+out = avgPol(imatrix,0)
 
-cv2.imshow('2', imatrix[2][7])
+cv2.imshow('1', imatrix[0][0])
+cv2.imshow('2', out)
 
 
 cv2.waitKey()
