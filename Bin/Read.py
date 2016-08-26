@@ -2,6 +2,9 @@ import cv2
 import os
 import numpy as np
 from PIL import Image
+import time
+start_time = time.time()
+
 
 
 def rawRead(path):
@@ -9,7 +12,7 @@ def rawRead(path):
     Leer Raw y Normalizar a 16b de profundidad
     """
     datosRaw = open(path, 'rb').read()
-    imagenRaw = Image.fromstring('F', (1280, 960), datosRaw, 'raw', 'F;16')
+    imagenRaw = Image.frombytes('F', (1280, 960), datosRaw, 'raw', 'F;16')
     imagenRaw = np.asanyarray(imagenRaw, dtype='uint16')
     imagenRaw *= (2 ** 16) / imagenRaw.max()
     return imagenRaw
@@ -58,23 +61,22 @@ def avgPol(matrix, polarizacion):
 
 def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
 
-
-path = []
-
-path.append('Data/008/3621/07032015/3621BRAZOIZQUIERDO/multi')
-path.append('Data/B007/11022015/multi')
-path.append('Data/018/3629/07072015/3629AXILAIZQUIERDA/multi')
-path.append('Data/030/3639/07102015/ESCAPULARDERECHASUPERIOR/multi')
-path.append('Data/029/3639/07102015/ESCAPULARDERECHAINFERIOR/multi')
+def search(pathe, folder):
+    directorios = [x[0] if x[0].split('\\')[-1] == folder else '' for x in os.walk(pathe)]
+    while '' in directorios:
+        directorios.remove('')
+    return directorios
 
 
-#datosimg = files[i].split("-") # 0. ) 1.Longitud de Onda 2. ? 3. ?
+"""Carpetas 008, B007, 018, 030, 029"""
 
 
-imatrix = createMatrix(path[4])
+path = search('Data/022', 'multi')[0]
+
+imatrix = createMatrix(path)
 avgotsu = avgPol(imatrix,8)
-cv2.imshow('1', imatrix[2][0])
-cv2.imshow('2', avgotsu)
+cv2.imshow('1', imatrix[2][2])
+#cv2.imshow('2', avgotsu)
 
-
+print("--- %s seconds ---" % (time.time() - start_time))
 cv2.waitKey()
