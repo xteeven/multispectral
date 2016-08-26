@@ -62,6 +62,13 @@ def avgPol(matrix, polarizacion):
 def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
 
 def search(pathe, folder):
+    """
+    Busqueda De carpetas al interior de los directorios que contienen las imagenes
+    :pathe: Directorio en el cual se desea buscar
+    :folder: Nombre de la carpeta que se desea encontrar
+    Devuelve array con la totalidad de coincidencias encontradas
+    """
+
     directorios = [x[0] if x[0].split('\\')[-1] == folder else '' for x in os.walk(pathe)]
     while '' in directorios:
         directorios.remove('')
