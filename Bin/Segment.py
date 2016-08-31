@@ -4,8 +4,10 @@ Contiene
 """
 import cv2 #Opencv 3.000 a 32bits
 import numpy as np
-from Read import search, imageMatrix, Matrixnames
+from Read import search, imageMatrix
 import time
+from matplotlib import pyplot as plt
+
 
 start_time = time.time()
 
@@ -32,17 +34,54 @@ def avgPol(matrix, polarizacion):
 
 def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
 
+def binarizar(imagen, valor):
+    imagen[img > valor] = 2**16-1
+    imagen[img < valor] = 0
+    return imagen
+
+
 """Carpetas 008, B007, 018, 030, 029"""
 
 
 path = search('Data/022', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
-#imatrix = createMatrix(path) #Generar matriz de imagen. Formato de salida descrito en el Source (Read.py)
+
 imatrix = imageMatrix(path)
+p = 0
+i = 3
+img = imatrix.image[p][i]
+img = cv2.blur(img, (5, 5))
+img = binarizar(img, 14000)
 
+hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
+hist2, bins1 = np.histogram(img.ravel(), 65536, [0, 65536])
 print("--- %s seconds ---" % (time.time() - start_time))
-cv2.putText(imatrix.image[0][2], "Image: " + imatrix.name[0][2], (100, 100), cv2.FONT_HERSHEY_TRIPLEX, 1, 255, 2)
-cv2.imshow('1', imatrix.image[0][2])
 
 
-cv2.waitKey()
+
+
+
+
+
+
+
+
+
+
+
+# Plots
+f = plt.figure()
+
+f1 = f.add_subplot(223)
+f1.plot(hist1)
+
+f2 = f.add_subplot(224)
+f2.plot(hist2)
+
+f3 = f.add_subplot(221)
+f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
+
+f4 = f.add_subplot(222)
+f4.imshow(img, cmap='gray', interpolation='none')
+
+plt.show()

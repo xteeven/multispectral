@@ -6,11 +6,9 @@ Busqueda En Directorios
 Crear Matrices
 """
 
-
 import os
 import numpy as np
 from PIL import Image
-
 
 def rawRead(path):
     """
@@ -62,5 +60,3 @@ class imageMatrix:
             [imagerows.append(rawRead(path + '/' + row)) for row in filesbypol[column]]
             imagematrix.append(imagerows)
         return imagematrix
-
-
