@@ -2,7 +2,7 @@
 Programa de Segmentacion
 Contiene
 """
-import cv2
+import cv2 #Opencv 3.000 a 32bits
 import numpy as np
 from Read import search, createMatrix
 import time
@@ -35,15 +35,16 @@ def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
 """Carpetas 008, B007, 018, 030, 029"""
 
 
-path = search('Data/022', 'multi')[0]
+path = search('Data/022', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
-imatrix = createMatrix(path)
+imatrix = createMatrix(path) #Generar matriz de imagen. Formato de salida descrito en el Source (Read.py)
 avgotsu = avgPol(imatrix,8)
 
 
-print("--- %s seconds ---" % (time.time() - start_time))
 
+
+print("--- %s seconds ---" % (time.time() - start_time))
 cv2.imshow('1', imatrix[0][2])
-#cv2.imshow('2', avgotsu)
+cv2.imshow('2', avgotsu)
 
 cv2.waitKey()
