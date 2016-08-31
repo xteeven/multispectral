@@ -4,7 +4,7 @@ Contiene
 """
 import cv2 #Opencv 3.000 a 32bits
 import numpy as np
-from Read import search, createMatrix
+from Read import search, imageMatrix, Matrixnames
 import time
 
 start_time = time.time()
@@ -37,14 +37,12 @@ def uint16to8(inputt): return np.asanyarray(inputt/250, dtype="uint8")
 
 path = search('Data/022', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
-imatrix = createMatrix(path) #Generar matriz de imagen. Formato de salida descrito en el Source (Read.py)
-avgotsu = avgPol(imatrix,8)
-
-
-
+#imatrix = createMatrix(path) #Generar matriz de imagen. Formato de salida descrito en el Source (Read.py)
+imatrix = imageMatrix(path)
 
 print("--- %s seconds ---" % (time.time() - start_time))
-cv2.imshow('1', imatrix[0][2])
-cv2.imshow('2', avgotsu)
+cv2.putText(imatrix.image[0][2], "Image: " + imatrix.name[0][2], (100, 100), cv2.FONT_HERSHEY_TRIPLEX, 1, 255, 2)
+cv2.imshow('1', imatrix.image[0][2])
+
 
 cv2.waitKey()
