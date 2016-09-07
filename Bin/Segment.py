@@ -9,6 +9,8 @@ import time
 from matplotlib import pyplot as plt
 from skimage.filters import threshold_otsu
 from scipy.ndimage import gaussian_filter
+from skimage.filters.rank import median
+from skimage.morphology import disk
 
 start_time = time.time()
 
@@ -44,17 +46,19 @@ def binarizar(imagen, valor):
 """Carpetas 008, B007, 018, 030, 029"""
 
 
-path = search('Data/022', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/030', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
 
 imatrix = imageMatrix(path)
 p = 0
 i = 3
 img = imatrix.image[p][i]
-img = cv2.blur(img, (5, 5))
-img2 = gaussian_filter(img, 1)
-# otsu = threshold_otsu(img, 2**16)
-# img = binarizar(img, otsu)
+img = gaussian_filter(img, 5)
+
+
+otsu = threshold_otsu(img, 2**16)
+
+img = binarizar(img, otsu)
 
 
 
@@ -86,8 +90,8 @@ f2 = f.add_subplot(224)
 f2.plot(hist2)
 
 f3 = f.add_subplot(221)
-# f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
-f3.imshow(img2, cmap='gray', interpolation='none')
+f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
+# f3.imshow(img2, cmap='gray', interpolation='none')
 
 
 f4 = f.add_subplot(222)
