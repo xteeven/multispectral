@@ -3,8 +3,10 @@ but Dataset isn't.
 
 Requisites:
 
-Numpy
+Numpy + mkl
 Pillow
 Opencv3
+Scipy
+Scickit Image
 
 Contact: David7246@gmail.com

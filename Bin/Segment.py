@@ -7,7 +7,8 @@ import numpy as np
 from Read import search, imageMatrix
 import time
 from matplotlib import pyplot as plt
-
+from skimage.filters import threshold_otsu
+from scipy.ndimage import gaussian_filter
 
 start_time = time.time()
 
@@ -51,7 +52,13 @@ p = 0
 i = 3
 img = imatrix.image[p][i]
 img = cv2.blur(img, (5, 5))
-img = binarizar(img, 14000)
+img2 = gaussian_filter(img, 1)
+# otsu = threshold_otsu(img, 2**16)
+# img = binarizar(img, otsu)
+
+
+
+# print otsu
 
 hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
 hist2, bins1 = np.histogram(img.ravel(), 65536, [0, 65536])
@@ -79,7 +86,9 @@ f2 = f.add_subplot(224)
 f2.plot(hist2)
 
 f3 = f.add_subplot(221)
-f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
+# f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
+f3.imshow(img2, cmap='gray', interpolation='none')
+
 
 f4 = f.add_subplot(222)
 f4.imshow(img, cmap='gray', interpolation='none')
