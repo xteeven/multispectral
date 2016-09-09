@@ -9,8 +9,7 @@ import time
 from matplotlib import pyplot as plt
 from skimage.filters import threshold_otsu
 from scipy.ndimage import gaussian_filter
-from skimage.filters.rank import median
-from skimage.morphology import disk
+from skimage import measure
 
 start_time = time.time()
 
@@ -46,23 +45,27 @@ def binarizar(imagen, valor):
 """Carpetas 008, B007, 018, 030, 029"""
 
 
-path = search('Data/030', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/029', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
 
 imatrix = imageMatrix(path)
 p = 0
 i = 3
 img = imatrix.image[p][i]
-img = gaussian_filter(img, 5)
+img = gaussian_filter(img, 2)
 
 
 otsu = threshold_otsu(img, 2**16)
 
 img = binarizar(img, otsu)
+img = gaussian_filter(img, 2)
+contours = measure.find_contours(img, 1)
+#
+# blobs = blob_log(img, min_sigma=50, num_sigma=10, threshold=.1)
+# lobs[:, 2] = blobs[:, 2] * sqrt(2)
 
+print contours
 
-
-# print otsu
 
 hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
 hist2, bins1 = np.histogram(img.ravel(), 65536, [0, 65536])
@@ -92,7 +95,8 @@ f2.plot(hist2)
 f3 = f.add_subplot(221)
 f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
 # f3.imshow(img2, cmap='gray', interpolation='none')
-
+for n, contour in enumerate(contours):
+    f3.plot(contour[:, 1], contour[:, 0], linewidth=2)
 
 f4 = f.add_subplot(222)
 f4.imshow(img, cmap='gray', interpolation='none')
