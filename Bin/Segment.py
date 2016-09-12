@@ -41,32 +41,45 @@ def binarizar(imagen, valor):
     imagen[img < valor] = 0
     return imagen
 
+def cont(imagen, depth=2**16, gaussian=3, screenpercent=0.5):
+    imagen = gaussian_filter(imagen, gaussian)
+    otsu = threshold_otsu(imagen, depth)
+    imagen = binarizar(imagen, otsu)
+    imagen = gaussian_filter(imagen, gaussian)
+    contours = measure.find_contours(imagen, 1)
+    centro = np.asanyarray([1280*0.5, 960*0.5])
+
+    for n, contorno in enumerate(contours):
+        print np.abs(centro - contorno.mean(axis=0))<[1280*screenpercent, 960*screenpercent]
+
+
+
+
+
+
+    print len(contours)
+    # while len(contours) > 1:
+    #     if contours[1].size < contours[0].size:
+    #         del contours[1]
+    #     else:
+    #         del contours[0]
+    return imagen, contours
 
 """Carpetas 008, B007, 018, 030, 029"""
 
 
-path = search('Data/029', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/012', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
 
 imatrix = imageMatrix(path)
 p = 0
 i = 3
 img = imatrix.image[p][i]
-img = gaussian_filter(img, 2)
 
-
-otsu = threshold_otsu(img, 2**16)
-
-img = binarizar(img, otsu)
-img = gaussian_filter(img, 2)
-contours = measure.find_contours(img, 1)
-#
-# blobs = blob_log(img, min_sigma=50, num_sigma=10, threshold=.1)
-# lobs[:, 2] = blobs[:, 2] * sqrt(2)
-
-print contours
-
-
+img, contours = cont(img)
+img2, contours2 = cont(imatrix.image[p][i+1])
+# print contour.mean(axis=0)
+# print contour2.mean(axis=0)
 hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
 hist2, bins1 = np.histogram(img.ravel(), 65536, [0, 65536])
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -99,6 +112,10 @@ for n, contour in enumerate(contours):
     f3.plot(contour[:, 1], contour[:, 0], linewidth=2)
 
 f4 = f.add_subplot(222)
-f4.imshow(img, cmap='gray', interpolation='none')
+# f4.imshow(img, cmap='gray', interpolation='none')
+f4.imshow(imatrix.image[p][i+1], cmap='gray', interpolation='none')
+# f3.imshow(img2, cmap='gray', interpolation='none')
+for n, contour2 in enumerate(contours2):
+    f4.plot(contour2[:, 1], contour2[:, 0], linewidth=2)
 
 plt.show()
