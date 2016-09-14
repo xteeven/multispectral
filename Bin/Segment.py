@@ -41,7 +41,7 @@ def binarizar(imagen, valor):
     imagen[img < valor] = 0
     return imagen
 
-def cont(imagen, depth=2**16, gaussian=3, screenpercent=0.5):
+def cont(imagen, depth=2**16, gaussian=3, screenpercent=0.7):
     imagen = gaussian_filter(imagen, gaussian)
     otsu = threshold_otsu(imagen, depth)
     imagen = binarizar(imagen, otsu)
@@ -49,35 +49,32 @@ def cont(imagen, depth=2**16, gaussian=3, screenpercent=0.5):
     contours = measure.find_contours(imagen, 1)
     centro = np.asanyarray([1280*0.5, 960*0.5])
 
-    for n, contorno in enumerate(contours):
-        print np.abs(centro - contorno.mean(axis=0))<[1280*screenpercent, 960*screenpercent]
-
-
-
-
-
-
-    print len(contours)
-    # while len(contours) > 1:
-    #     if contours[1].size < contours[0].size:
-    #         del contours[1]
-    #     else:
-    #         del contours[0]
+    while len(contours) > 1:
+        if sum(np.abs(centro - contours[1].mean(axis=0)) < [1280*screenpercent*0.5, 960*screenpercent*0.5]) != 2:
+            del contours[1]
+        elif sum(np.abs(centro - contours[0].mean(axis=0)) < [1280*screenpercent*0.5, 960*screenpercent*0.5]) != 2:
+            del contours[0]
+        else:
+            if contours[1].size < contours[0].size:
+                del contours[1]
+            else:
+                del contours[0]
+    print contours[0].mean(axis=0), [1280*screenpercent, 960*screenpercent], np.abs(centro - contours[0].mean(axis=0))
     return imagen, contours
 
 """Carpetas 008, B007, 018, 030, 029"""
 
 
-path = search('Data/012', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/025', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 
 
 imatrix = imageMatrix(path)
 p = 0
-i = 3
+i = 2
 img = imatrix.image[p][i]
-
+img2 = imatrix.image[p][i+1]
 img, contours = cont(img)
-img2, contours2 = cont(imatrix.image[p][i+1])
+img2, contours2 = cont(img2)
 # print contour.mean(axis=0)
 # print contour2.mean(axis=0)
 hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
