@@ -1,18 +1,13 @@
 """
 Programa de Segmentacion
-Contiene
+Contiene Binarizacion, promedios de polarizacion, corte mediante contornos
 """
 import cv2 #Opencv 3.000 a 32bits
 import numpy as np
-from Read import search, imageMatrix
-import time
-from matplotlib import pyplot as plt
 from skimage.filters import threshold_otsu
 from scipy.ndimage import gaussian_filter
 from skimage import measure
 from skimage import filters
-import math
-
 
 def avgPol(matrix, polarizacion):
     """
@@ -76,7 +71,3 @@ def cutt(image, contorno, newcontour = False):
         return corte, np.asarray(newcont)
     else:
         return corte
-
-def polar(x,y):
-  return math.hypot(x,y),math.degrees(math.atan2(y,x))
-

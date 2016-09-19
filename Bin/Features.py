@@ -1,6 +1,5 @@
-
-"""
-Programa de Segmentacion
+""""
+Programa de Extraccion de caracteristicas
 Contiene
 """
 import cv2 #Opencv 3.000 a 32bits
@@ -20,10 +19,7 @@ p = 0
 i = 2
 img = np.copy(imatrix.image[p][i])
 img, contours = cont(img, t=2)
-# hist1, bins = np.histogram(imatrix.image[p][i].ravel(), 65536, [0, 65536])
 print("--- %s seconds ---" % (time.time() - start_time))
-
-
 cut, normcontor = cutt(imatrix.image[p][i], contours, True)
 centrado = normcontor-normcontor.mean(axis=0)
 r = (centrado[:, 1]**2 + centrado[:, 0]**2)**0.5
@@ -37,10 +33,7 @@ f1 = f.add_subplot(223)
 f1.plot(theta+180, r)
 
 f2 = f.add_subplot(224, polar=True)
-# f2.plot(centrado[:, 1], centrado[:, 0])
 f2.plot(theta+180, r)
-
-
 
 
 f3 = f.add_subplot(221)
