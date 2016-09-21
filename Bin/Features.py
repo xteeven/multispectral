@@ -13,12 +13,12 @@ from Segment import cont, cutt
 start_time = time.time()
 
 
-path = search('Data/025', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/005', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 imatrix = imageMatrix(path)
 p = 0
 i = 2
 img = np.copy(imatrix.image[p][i])
-img, contours = cont(img, t=2)
+img, contours = cont(img, t=2,screenpercent=0.6)
 print("--- %s seconds ---" % (time.time() - start_time))
 cut, normcontor = cutt(imatrix.image[p][i], contours, True)
 centrado = normcontor-normcontor.mean(axis=0)
@@ -30,7 +30,7 @@ theta = np.arctan2(centrado[:, 1],centrado[:, 0])
 f = plt.figure()
 
 f1 = f.add_subplot(223)
-f1.plot(theta+180, r)
+f1.plot(theta, r)
 
 f2 = f.add_subplot(224, polar=True)
 f2.plot(theta+180, r)
