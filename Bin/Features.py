@@ -13,7 +13,7 @@ from skimage.transform import rotate
 start_time = time.time()
 
 
-path = search('Data/003', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/028', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 imatrix = imageMatrix(path)
 p = 0
 i = 2
@@ -29,30 +29,37 @@ centrado = normcontor-normcontor.mean(axis=0)
 r = (centrado[:, 1]**2 + centrado[:, 0]**2)**0.5
 theta = np.arctan2(centrado[:, 1], centrado[:, 0])-np.pi/2
 #
-# r = r.tolist()
-# theta = theta.tolist()
-# r.sort(key=dict(zip(r, theta)).get)
-# theta.sort()
+
 
 # Plots
-f = plt.figure()
-
+f = plt.figure('Segmentacion')
 f1 = f.add_subplot(223)
 f1.plot(theta, r)
-
-
 f2 = f.add_subplot(224, polar=True)
 f2.plot(theta, r)
-
-
 f3 = f.add_subplot(221)
-f3.imshow(rotate(imatrix.image[p][i],ang), cmap='gray', interpolation='none')
-
+f3.imshow(imatrix.image[p][i], cmap='gray', interpolation='none')
 f3.plot(contours[:, 1], contours[:, 0], linewidth=2)
-
 f4 = f.add_subplot(222)
 f4.imshow(cut, cmap='gray', interpolation='none')
 f4.plot(normcontor[:, 1], normcontor[:, 0], linewidth=2)
+
+m = plt.figure('Multiespectral')
+sub = m.add_subplot(3, 7, 1)
+
+for nimg in range(0, 24):
+    sub = m.add_subplot(3, 8, 1+nimg)
+    sub.set_xticks([])
+    sub.set_yticks([])
+    pol = nimg/8
+    wave = nimg-(nimg/8)*8
+    window = np.mean(r)/1.5
+    centerx, centery = int(contours.mean(axis=0)[0]), int(contours.mean(axis=0)[1])
+    texture = imatrix.image[pol][wave][centerx-window:centerx+window, centery-window:centery+window]
+    sub.imshow(texture, cmap='gray', interpolation='none')
+    #sub.plot(contours[:, 1], contours[:, 0], linewidth=2)
+    print nimg/8, nimg-(nimg/8)*8, nimg+1, texture
+
 
 print np.mean(r)/np.median(r), np.mean(r), np.std(r), (np.sum(r))/(1280*960)
 plt.show()
