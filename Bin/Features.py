@@ -13,7 +13,7 @@ from skimage.transform import rotate
 start_time = time.time()
 
 
-path = search('Data/028', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
+path = search('Data/003', 'multi')[0] #Buscar Path donde se encuentran las imagenes RAW
 imatrix = imageMatrix(path)
 p = 0
 i = 2
@@ -47,19 +47,25 @@ f4.plot(normcontor[:, 1], normcontor[:, 0], linewidth=2)
 m = plt.figure('Multiespectral')
 sub = m.add_subplot(3, 7, 1)
 
+
+polar = [[], [], []]
+
 for nimg in range(0, 24):
     sub = m.add_subplot(3, 8, 1+nimg)
     sub.set_xticks([])
     sub.set_yticks([])
     pol = nimg/8
     wave = nimg-(nimg/8)*8
-    window = np.mean(r)/1.5
+    window = int(np.mean(r)/1.5)
     centerx, centery = int(contours.mean(axis=0)[0]), int(contours.mean(axis=0)[1])
     texture = imatrix.image[pol][wave][centerx-window:centerx+window, centery-window:centery+window]
+    polar[nimg/8].append(np.mean(texture))
     sub.imshow(texture, cmap='gray', interpolation='none')
     #sub.plot(contours[:, 1], contours[:, 0], linewidth=2)
-    print nimg/8, nimg-(nimg/8)*8, nimg+1, texture
+    print nimg/8, nimg-(nimg/8)*8, nimg+1, np.mean(texture)
 
-
-print np.mean(r)/np.median(r), np.mean(r), np.std(r), (np.sum(r))/(1280*960)
+polart = plt.figure('polarizacion')
+po = polart.add_subplot(111)
+po.plot(polar[0])
+print np.mean(r)/np.median(r), np.mean(r), np.std(r), (np.sum(r))/(1280*960), polar
 plt.show()
